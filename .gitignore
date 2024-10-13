@@ -1,0 +1,19 @@
+venv/
+dist/
+**/.idea/
+__pycache__/
+employees.json
+Тестовое задание на позицию Junior Python Developer.pdf
+
+
+*.log
+*.whl
+*.gz
+*.pyc
+*.iml
+*.ipynb
+
+.idea/*.iml
+coverage.xml
+
+
