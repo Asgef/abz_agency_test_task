@@ -3,6 +3,8 @@ dist/
 **/.idea/
 __pycache__/
 employees.json
+.env
+db.sqlite3
 Тестовое задание на позицию Junior Python Developer.pdf
 
 
