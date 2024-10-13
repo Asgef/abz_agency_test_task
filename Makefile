@@ -5,7 +5,7 @@ install:
 	poetry install
 
 start-production:
-	poetry run gunicorn --daemon -w 3 -b 0.0.0.0:8000 employee_tree.wsgi
+	poetry run gunicorn -w 3 -b 0.0.0.0:8000 employee_tree.wsgi
 
 stop-production:
 	pkill -f 'employee_tree.wsgi:application'
@@ -25,7 +25,7 @@ migrate:
 
 build:
 	make migrate
-	make staticfiles
+
 
 test:
 	poetry run python3 manage.py test
