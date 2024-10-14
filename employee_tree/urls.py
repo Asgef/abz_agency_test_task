@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import HomePageView
+from .views import HomePageView, EmployeeChildrenView
 
 urlpatterns = [
-    path('', HomePageView.as_view(), name='home_page'),
     path('admin/', admin.site.urls),
+    path('', HomePageView.as_view(), name='home_page'),
+    path(
+        'employee-children/<int:employee_id>/',
+        EmployeeChildrenView.as_view(), name='employee_children'
+    ),
 ]

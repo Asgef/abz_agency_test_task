@@ -5,46 +5,28 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Иерархия сотрудников</h2>
-    <div class="employee-tree">
-        {% if employees is not None %}
-            {% if employees %}
-            <ul>
-                {% for employee in employees %}
-                    {% if employee.manager_id == None %}
-                        <li>
-                            <strong>{{ employee.position }}: {{ employee.name }}</strong>
-                            <ul>
-                                {% for sub_employee in employees %}
-                                    {% if sub_employee.manager_id == employee.id %}
-                                        <li>
-                                            <strong>{{ sub_employee.position }}: {{ sub_employee.name }}</strong>
-                                            <details>
-                                                <summary>Показать подчиненных</summary>
-                                                <ul>
-                                                    {% for sub_sub_employee in employees %}
-                                                        {% if sub_sub_employee.manager_id == sub_employee.id %}
-                                                            <li>
-                                                                <strong>{{ sub_sub_employee.position }}: {{ sub_sub_employee.name }}</strong>
-                                                                <!-- уровни по необходимости -->
-                                                            </li>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </ul>
-                                            </details>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>Данные о сотрудниках отсутствуют.</p>
-            {% endif %}
-        {% else %}
-        <p>Данные о сотрудниках отсутствуют.</p>
-        {% endif %}
+    <div id="employee-tree">
+        <ul>
+            {% for employee in employees %}
+                <li>
+                    <details data-employee-id="{{ employee.id }}">
+                        <summary><strong>{{ employee.position }}: {{ employee.name }}</strong></summary>
+                        <ul>
+                            {% for sub_employee in employees %}
+                                {% if sub_employee.manager_id == employee.id %}
+                                    <li>
+                                        <details data-employee-id="{{ sub_employee.id }}">
+                                            <summary><strong>{{ sub_employee.position }}: {{ sub_employee.name }}</strong></summary>
+                                            <ul></ul> <!-- Пустой список для AJAX -->
+                                        </details>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 
