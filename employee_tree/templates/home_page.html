@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Иерархия сотрудников</h2>
+    <div class="employee-tree">
+        {% if employees is not None %}
+            {% if employees %}
+            <ul>
+                {% for employee in employees %}
+                    {% if employee.manager_id == None %}
+                        <li>
+                            <strong>{{ employee.position }}: {{ employee.name }}</strong>
+                            <ul>
+                                {% for sub_employee in employees %}
+                                    {% if sub_employee.manager_id == employee.id %}
+                                        <li>
+                                            <strong>{{ sub_employee.position }}: {{ sub_employee.name }}</strong>
+                                            <ul>
+                                                {% for sub_sub_employee in employees %}
+                                                    {% if sub_sub_employee.manager_id == sub_employee.id %}
+                                                        <li>
+                                                            <strong>{{ sub_sub_employee.position }}: {{ sub_sub_employee.name }}</strong>
+                                                            <!-- Продолжайте вложенные уровни по необходимости -->
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Данные о сотрудниках отсутствуют.</p>
+            {% endif %}
+        {% else %}
+        <p>Данные о сотрудниках отсутствуют.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .employee-tree ul {
+        list-style-type: none;
+    }
+    .employee-tree ul ul {
+        margin-left: 20px;
+        border-left: 1px solid #ccc;
+        padding-left: 20px;
+    }
+    .employee-tree li {
+        margin: 10px 0;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,14 @@
+
+    .employee-tree ul {
+        list-style-type: none;
+    }
+
+    .employee-tree ul ul {
+        margin-left: 20px;
+        border-left: 1px solid #ccc;
+        padding-left: 20px;
+    }
+
+    .employee-tree li {
+        margin: 10px 0;
+    }
