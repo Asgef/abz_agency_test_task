@@ -12,7 +12,6 @@ class Employee(models.Model):
         related_name='subordinates'
     )
 
-
     def __str__(self):
         return self.name
 

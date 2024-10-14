@@ -1,23 +1,27 @@
 from django_seed import Seed
+from django.db import transaction
 import random
 import django
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'employee_tree.settings')
+os.environ.setdefault(
+    'DJANGO_SETTINGS_MODULE', 'employee_tree.settings'
+)
 django.setup()
 
-from employee_tree.models import Employee
+from employee_tree.models import Employee  # noqa E402
 
 
 seeder = Seed.seeder()
 
 positions = [
-    "CEO", "Руководитель отдела", "Менеджер", "Старший инженер", "Инженер"
+    "Генеральный директор", "Руководитель отдела",
+    "Менеджер", "Старший инженер", "Инженер"
 ]
 
-# Create the CEO first
+# Создать первого сотрудника "Генеральный директор"
 if not Employee.objects.filter(id=1).exists():
-    ceo = Employee.objects.create(
+    gen_dir = Employee.objects.create(
         id=1,
         name=seeder.faker.name(),
         position="CEO",
@@ -26,15 +30,57 @@ if not Employee.objects.filter(id=1).exists():
         manager=None
     )
 
-# Add other employees
-seeder.add_entity(Employee, 49999, {
-    'id': lambda x: seeder.faker.unique.random_int(min=2, max=50000),
-    'name': lambda x: seeder.faker.name(),
-    'position': lambda x: random.choices(positions[1:], weights=[1, 2, 5, 10])[0],
-    'hire_date': lambda x: seeder.faker.date_this_century(),
-    'salary': lambda x: random.randint(50000, 200000),
-    'manager': lambda x: Employee.objects.filter(position__in=positions[:-1]).order_by('?').first(),
-})
+# Создать других сотрудников
+with transaction.atomic():
+    # Создать уровень "Руководитель отдела"
+    heads = []
+    for i in range(2, 12):
+        head = Employee.objects.create(
+            id=i,
+            name=seeder.faker.name(),
+            position="Руководитель отдела",
+            hire_date=seeder.faker.date_this_century(),
+            salary=random.randint(200000, 300000),
+            manager=gen_dir
+        )
+        heads.append(head)
 
-# Execute the seeding
-inserted_pks = seeder.execute()
+    # Создать уровень "Менеджер"
+    managers = []
+    for i in range(12, 102):
+        manager = Employee.objects.create(
+            id=i,
+            name=seeder.faker.name(),
+            position="Менеджер",
+            hire_date=seeder.faker.date_this_century(),
+            salary=random.randint(150000, 200000),
+            manager=random.choice(heads)
+        )
+        managers.append(manager)
+
+    # Создать уровень "Старший инженер"
+    senior_engineers = []
+    for i in range(102, 1002):
+        senior_engineer = Employee.objects.create(
+            id=i,
+            name=seeder.faker.name(),
+            position="Старший инженер",
+            hire_date=seeder.faker.date_this_century(),
+            salary=random.randint(100000, 150000),
+            manager=random.choice(managers)
+        )
+        senior_engineers.append(senior_engineer)
+
+    # Создать уровень "Инженер"
+    for i in range(1002, 50001):
+        Employee.objects.create(
+            id=i,
+            name=seeder.faker.name(),
+            position="Инженер",
+            hire_date=seeder.faker.date_this_century(),
+            salary=random.randint(50000, 100000),
+            manager=random.choice(senior_engineers)
+        )
+
+
+print(f"Created {Employee.objects.count()} employees.")
