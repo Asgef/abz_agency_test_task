@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">{{ title }}</h2>
+
+    <!-- Форма фильтрации -->
+    <form method="get" class="mb-4">
+        <div class="form-group">
+            <label for="id_name">Name:</label>
+            {{ filter.form.name }}
+        </div>
+        <div class="form-group">
+            <label for="id_position">Position:</label>
+            {{ filter.form.position }}
+        </div>
+        <div class="form-group">
+            <label for="id_hire_date">Hire date (range):</label>
+            {{ filter.form.hire_date }}
+        </div>
+        <div class="form-group">
+                       </div>
+        <div class="form-group">
+            <label for="id_salary">Salary:</label>
+            {{ filter.form.salary }}
+        </div>
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+    </form>
+
+    <!-- Список сотрудников -->
+    <div id="employee-list" class="list-group">
+        {% for employee in employees %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span><strong>{{ employee.position }}: {{ employee.name }}</strong></span>
+                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#employeeDetails{{ employee.id }}">
+                    Подробнее
+                </button>
+            </div>
+            <div class="collapse mt-2" id="employeeDetails{{ employee.id }}">
+                <ul class="list-group">
+                    <li class="list-group-item">Имя: {{ employee.name }}</li>
+                    <li class="list-group-item">Должность: {{ employee.position }}</li>
+                    <li class="list-group-item">Дата приема на работу: {{ employee.hire_date }}</li>
+                    <li class="list-group-item">Заработная плата: {{ employee.salary }}</li>
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    <nav aria-label="Постраничная навигация">
+        <ul class="pagination justify-content-center mt-4">
+            {% if employees.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ employees.previous_page_number }}&{{ request.GET.urlencode }}">Назад</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item disabled"><span class="page-link">Страница {{ employees.number }} из {{ employees.paginator.num_pages }}</span></li>
+
+            {% if employees.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ employees.next_page_number }}&{{ request.GET.urlencode }}">Вперед</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}

@@ -38,7 +38,10 @@ class HomePageViewTest(TestCase):
 
     def test_view_context_data_child(self):
         # Контекст AJAX-запроса
-        response = self.client.get(reverse('employee_children', args=[1]), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get(reverse(
+            'employee_children', args=[1]),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
         json_data = response.json()
