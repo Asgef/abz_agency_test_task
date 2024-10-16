@@ -9,19 +9,25 @@
     <!-- Форма фильтрации -->
     <form method="get" class="mb-4">
         <div class="form-group">
-            <label for="id_name">Name:</label>
-            {{ filter.form.name }}
+            <label for="id_first_name">Имя:</label>
+            {{ filter.form.first_name }}
         </div>
         <div class="form-group">
-            <label for="id_position">Position:</label>
+            <label for="id_last_name">Фамилия:</label>
+            {{ filter.form.last_name }}
+        </div>
+        <div class="form-group">
+            <label for="id_position">Должность:</label>
             {{ filter.form.position }}
         </div>
         <div class="form-group">
-            <label for="id_hire_date">Hire date (range):</label>
-            {{ filter.form.hire_date }}
+            <label for="id_hire_date_after">Hire date (from):</label>
+            {{ filter.form.hire_date.after }}
         </div>
         <div class="form-group">
-                       </div>
+            <label for="id_hire_date_before">Hire date (to):</label>
+            {{ filter.form.hire_date.before }}
+        </div>
         <div class="form-group">
             <label for="id_salary">Salary:</label>
             {{ filter.form.salary }}
@@ -29,26 +35,33 @@
         <button type="submit" class="btn btn-primary">Фильтровать</button>
     </form>
 
-    <!-- Список сотрудников -->
-    <div id="employee-list" class="list-group">
-        {% for employee in employees %}
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <span><strong>{{ employee.position }}: {{ employee.first_name }} {{ employee.last_name }}</strong></span>
-                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#employeeDetails{{ employee.id }}">
-                    Подробнее
-                </button>
-            </div>
-            <div class="collapse mt-2" id="employeeDetails{{ employee.id }}">
-                <ul class="list-group">
-                    <li class="list-group-item">Имя: {{ employee.first_name }}</li>
-                    <li class="list-group-item">Фамилия: {{ employee.last_name }}</li>
-                    <li class="list-group-item">Должность: {{ employee.position }}</li>
-                    <li class="list-group-item">Дата приема на работу: {{ employee.hire_date }}</li>
-                    <li class="list-group-item">Заработная плата: {{ employee.salary }}</li>
-                </ul>
-            </div>
-        {% endfor %}
-    </div>
+    <!-- Таблица сотрудников -->
+    <table class="table table-striped" id="employee-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th class="sortable" data-ordering="first_name"><a href="?ordering=first_name&{{ request.GET.urlencode }}">Имя</a></th>
+                <th class="sortable" data-ordering="last_name"><a href="?ordering=last_name&{{ request.GET.urlencode }}">Фамилия</a></th>
+                <th class="sortable" data-ordering="position"><a href="?ordering=position&{{ request.GET.urlencode }}">Должность</a></th>
+                <th class="sortable" data-ordering="hire_date"><a href="?ordering=hire_date&{{ request.GET.urlencode }}">Дата приёма</a></th>
+                <th class="sortable" data-ordering="salary"><a href="?ordering=salary&{{ request.GET.urlencode }}">Зарплата</a></th>
+                <th class="sortable" data-ordering="manager"><a href="?ordering=salary&{{ request.GET.urlencode }}">Менеджер</a></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ employee.first_name }}</td>
+                <td>{{ employee.last_name }}</td>
+                <td>{{ employee.position }}</td>
+                <td>{{ employee.hire_date }}</td>
+                <td>{{ employee.salary }}</td>
+                <td>{% if employee.manager %}{{ employee.manager.first_name }} {{ employee.manager.last_name }}{% else %}—{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <!-- Пагинация -->
     <nav aria-label="Постраничная навигация">
@@ -69,5 +82,29 @@
         </ul>
     </nav>
 </div>
+
+<!-- AJAX сортировка -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.sortable').click(function(e) {
+            e.preventDefault();
+            const ordering = $(this).data('ordering');
+            $.ajax({
+                url: '{% url "employee_list" %}',
+                data: {
+                    ordering: ordering,
+                    filter: '{{ request.GET.urlencode }}',
+                },
+                success: function(data) {
+                    $('#employee-table tbody').html($(data.html).find('#employee-table tbody').html());
+                },
+                error: function() {
+                    alert('Ошибка загрузки данных');
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}

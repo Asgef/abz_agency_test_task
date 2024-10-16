@@ -4,6 +4,7 @@ from .filters import EmployeeFilter
 from django_filters.views import FilterView
 from django.http import JsonResponse
 from django.views import View
+from django.template.loader import render_to_string
 
 
 class HomePageView(ListView):
@@ -38,4 +39,17 @@ class EmployeeListView(FilterView, ListView):
         'title': 'Список сотрудников'
     }
     paginate_by = 20
-    ordering = 'id'
+
+    def get_ordering(self):
+        ordering = self.request.GET.get('ordering')
+        if ordering in ['first_name', 'last_name', 'position', 'hire_date', 'salary', 'manager', '-first_name', '-last_name', '-position', '-hire_date', '-salary', '-manager']:
+            return ordering
+        return 'id'
+
+    def get(self, request, *args, **kwargs):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            self.object_list = self.get_queryset()
+            context = self.get_context_data()
+            html = render_to_string('employee_list.html', context, request=request)
+            return JsonResponse({'html': html})
+        return super().get(request, *args, **kwargs)
