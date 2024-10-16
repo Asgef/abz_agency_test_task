@@ -1,14 +1,65 @@
 
-    .employee-tree ul {
-        list-style-type: none;
-    }
+.employee-tree {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    .employee-tree ul ul {
-        margin-left: 20px;
-        border-left: 1px solid #ccc;
-        padding-left: 20px;
-    }
+.employee-tree ul {
+    list-style-type: none;
+    padding-left: 0;
+}
 
-    .employee-tree li {
-        margin: 10px 0;
-    }
+.employee-tree ul ul {
+    margin-left: 20px;
+    border-left: 1px solid #ccc;
+    padding-left: 20px;
+}
+
+.employee-tree li {
+    margin: 10px 0;
+}
+
+.employee-tree details {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.employee-tree summary {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.employee-tree summary:hover {
+    color: #007bff;
+}
+
+/* Чередующийся фон для уровней иерархии */
+.details-even {
+    background-color: #f0f0f0;
+}
+
+.details-odd {
+    background-color: #ffffff;
+}
+
+/* Границы */
+.level-0, .level-1, .level-2, .level-3, .level-4 {
+    border-left: 2px solid #ccc;
+    padding-left: 15px;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
