@@ -40,12 +40,12 @@
         <thead>
             <tr>
                 <th>№</th>
-                <th class="sortable" data-ordering="first_name"><a href="?ordering=first_name&{{ request.GET.urlencode }}">Имя</a></th>
-                <th class="sortable" data-ordering="last_name"><a href="?ordering=last_name&{{ request.GET.urlencode }}">Фамилия</a></th>
-                <th class="sortable" data-ordering="position"><a href="?ordering=position&{{ request.GET.urlencode }}">Должность</a></th>
-                <th class="sortable" data-ordering="hire_date"><a href="?ordering=hire_date&{{ request.GET.urlencode }}">Дата приёма</a></th>
-                <th class="sortable" data-ordering="salary"><a href="?ordering=salary&{{ request.GET.urlencode }}">Зарплата</a></th>
-                <th class="sortable" data-ordering="manager"><a href="?ordering=salary&{{ request.GET.urlencode }}">Менеджер</a></th>
+                <th class="sortable"><a href="#" data-ordering="first_name">Имя</a></th>
+                <th class="sortable"><a href="#" data-ordering="last_name">Фамилия</a></th>
+                <th class="sortable"><a href="#" data-ordering="position">Должность</a></th>
+                <th class="sortable"><a href="#" data-ordering="hire_date">Дата приёма</a></th>
+                <th class="sortable"><a href="#" data-ordering="salary">Зарплата</a></th>
+                <th class="sortable"><a href="#" data-ordering="manager__last_name">Менеджер</a></th>
             </tr>
         </thead>
         <tbody>
@@ -68,7 +68,7 @@
         <ul class="pagination justify-content-center mt-4">
             {% if employees.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ employees.previous_page_number }}&{{ request.GET.urlencode }}">Назад</a>
+                    <a class="page-link" href="?page={{ employees.previous_page_number }}&{{ request.GET.urlencode|default:'' }}">Назад</a>
                 </li>
             {% endif %}
 
@@ -76,7 +76,7 @@
 
             {% if employees.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ employees.next_page_number }}&{{ request.GET.urlencode }}">Вперед</a>
+                    <a class="page-link" href="?page={{ employees.next_page_number }}&{{ request.GET.urlencode|default:'' }}">Вперед</a>
                 </li>
             {% endif %}
         </ul>
@@ -87,14 +87,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.sortable').click(function(e) {
+        $('.sortable a').click(function(e) {
             e.preventDefault();
-            const ordering = $(this).data('ordering');
+            let currentOrdering = $(this).data('ordering');
+            let newOrdering = currentOrdering.startsWith('-') ? currentOrdering.substring(1) : '-' + currentOrdering;
+            $(this).data('ordering', newOrdering);
             $.ajax({
-                url: '{% url "employee_list" %}',
+                url: window.location.pathname,
                 data: {
-                    ordering: ordering,
-                    filter: '{{ request.GET.urlencode }}',
+                    ordering: newOrdering,
+                    filter: $('form').serialize(),
                 },
                 success: function(data) {
                     $('#employee-table tbody').html($(data.html).find('#employee-table tbody').html());

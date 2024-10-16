@@ -25,8 +25,8 @@ class EmployeeChildrenView(View):
         # Загрузить подчинённых для данного сотрудника
         children = Employee.objects.filter(
             manager_id=employee_id).values(
-            'id', 'first_name', 'last_name', 'position', 'manager_id'
-        )
+            'id', 'name', 'position', 'manager_id'
+            )
         return JsonResponse(list(children), safe=False)
 
 
@@ -42,7 +42,11 @@ class EmployeeListView(FilterView, ListView):
 
     def get_ordering(self):
         ordering = self.request.GET.get('ordering')
-        if ordering in ['first_name', 'last_name', 'position', 'hire_date', 'salary', 'manager', '-first_name', '-last_name', '-position', '-hire_date', '-salary', '-manager']:
+        if ordering in [
+            'first_name', 'last_name', 'position', 'hire_date', 'salary',
+            'manager__last_name', '-first_name', '-last_name', '-position',
+            '-hire_date', '-salary', '-manager__last_name'
+        ]:
             return ordering
         return 'id'
 
@@ -50,6 +54,8 @@ class EmployeeListView(FilterView, ListView):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             self.object_list = self.get_queryset()
             context = self.get_context_data()
-            html = render_to_string('employee_list.html', context, request=request)
+            html = render_to_string(
+                'employee_list.html', context, request=request
+            )
             return JsonResponse({'html': html})
         return super().get(request, *args, **kwargs)
