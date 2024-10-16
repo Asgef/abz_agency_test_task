@@ -10,7 +10,8 @@ class Employee(models.Model):
         ('Инженер', 'Инженер'),
     ]
     id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     position = models.CharField(max_length=255, choices=POSITION_CHOICES)
     hire_date = models.DateField()
     salary = models.IntegerField()
@@ -20,7 +21,7 @@ class Employee(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return f"{self.first_name} {self.last_name}"
 
     class Meta:
         verbose_name = "Сотрудник"

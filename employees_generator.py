@@ -23,8 +23,9 @@ positions = [
 if not Employee.objects.filter(id=1).exists():
     gen_dir = Employee.objects.create(
         id=1,
-        name=seeder.faker.name(),
-        position="CEO",
+        first_name=seeder.faker.first_name(),
+        last_name=seeder.faker.last_name(),
+        position="Генеральный директор",
         hire_date=seeder.faker.date_this_century(),
         salary=random.randint(300000, 500000),
         manager=None
@@ -37,7 +38,8 @@ with transaction.atomic():
     for i in range(2, 12):
         head = Employee.objects.create(
             id=i,
-            name=seeder.faker.name(),
+            first_name=seeder.faker.first_name(),
+            last_name=seeder.faker.last_name(),
             position="Руководитель отдела",
             hire_date=seeder.faker.date_this_century(),
             salary=random.randint(200000, 300000),
@@ -50,7 +52,8 @@ with transaction.atomic():
     for i in range(12, 102):
         manager = Employee.objects.create(
             id=i,
-            name=seeder.faker.name(),
+            first_name=seeder.faker.first_name(),
+            last_name=seeder.faker.last_name(),
             position="Менеджер",
             hire_date=seeder.faker.date_this_century(),
             salary=random.randint(150000, 200000),
@@ -63,7 +66,8 @@ with transaction.atomic():
     for i in range(102, 1002):
         senior_engineer = Employee.objects.create(
             id=i,
-            name=seeder.faker.name(),
+            first_name=seeder.faker.first_name(),
+            last_name=seeder.faker.last_name(),
             position="Старший инженер",
             hire_date=seeder.faker.date_this_century(),
             salary=random.randint(100000, 150000),
@@ -75,7 +79,8 @@ with transaction.atomic():
     for i in range(1002, 50001):
         Employee.objects.create(
             id=i,
-            name=seeder.faker.name(),
+            first_name=seeder.faker.first_name(),
+            last_name=seeder.faker.last_name(),
             position="Инженер",
             hire_date=seeder.faker.date_this_century(),
             salary=random.randint(50000, 100000),

@@ -10,7 +10,7 @@
             {% for employee in employees %}
                 <li>
                     <details data-employee-id="{{ employee.id }}">
-                        <summary><strong>{{ employee.position }}: {{ employee.name }}</strong></summary>
+                        <summary><strong>{{ employee.position }}: {{ employee.first_name }} {{ employee.last_name }}</strong></summary>
                         <ul></ul> <!-- Пустой список для AJAX -->
                     </details>
                 </li>

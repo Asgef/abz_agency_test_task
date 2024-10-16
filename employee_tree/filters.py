@@ -12,5 +12,5 @@ class EmployeeFilter(FilterSet):
     class Meta:
         model = Employee
         fields = [
-            'name', 'position', 'hire_date', 'salary',
+            'position', 'hire_date', 'salary',
         ]

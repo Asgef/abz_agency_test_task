@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const detailsClass = newLevel % 2 === 0 ? 'details-even' : 'details-odd';
                         li.innerHTML = `
                             <details data-employee-id="${child.id}" class="${detailsClass}">
-                                <summary><strong>${child.position}: ${child.name}</strong></summary>
+                                <summary><strong>${child.position}: ${child.first_name} ${child.last_name}</strong></summary>
                                 <ul></ul>
                             </details>`;
                         ulElement.appendChild(li);

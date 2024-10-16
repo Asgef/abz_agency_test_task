@@ -33,14 +33,15 @@
     <div id="employee-list" class="list-group">
         {% for employee in employees %}
             <div class="list-group-item d-flex justify-content-between align-items-center">
-                <span><strong>{{ employee.position }}: {{ employee.name }}</strong></span>
+                <span><strong>{{ employee.position }}: {{ employee.first_name }} {{ employee.last_name }}</strong></span>
                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#employeeDetails{{ employee.id }}">
                     Подробнее
                 </button>
             </div>
             <div class="collapse mt-2" id="employeeDetails{{ employee.id }}">
                 <ul class="list-group">
-                    <li class="list-group-item">Имя: {{ employee.name }}</li>
+                    <li class="list-group-item">Имя: {{ employee.first_name }}</li>
+                    <li class="list-group-item">Фамилия: {{ employee.last_name }}</li>
                     <li class="list-group-item">Должность: {{ employee.position }}</li>
                     <li class="list-group-item">Дата приема на работу: {{ employee.hire_date }}</li>
                     <li class="list-group-item">Заработная плата: {{ employee.salary }}</li>
