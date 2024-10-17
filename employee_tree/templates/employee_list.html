@@ -7,6 +7,40 @@
     <h2 class="text-center mb-4">{{ title }}</h2>
 
     <!-- Фильтр сотрудников -->
+    <form id="filter-form" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="first_name" class="form-control" placeholder="Имя" value="{{ request.GET.first_name }}">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="last_name" class="form-control" placeholder="Фамилия" value="{{ request.GET.last_name }}">
+            </div>
+            <div class="col-md-3">
+                <select name="position" class="form-control">
+                    <option value="">Выберите должность</option>
+                    {% for key, value in employees.model.POSITION_CHOICES %}
+                        <option value="{{ key }}" {% if request.GET.position == key %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="hire_date_start" class="form-control" placeholder="Дата приёма с" value="{{ request.GET.hire_date_start }}">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="hire_date_end" class="form-control" placeholder="Дата приёма по" value="{{ request.GET.hire_date_end }}">
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="salary_min" class="form-control" placeholder="Мин. зарплата" value="{{ request.GET.salary_min }}">
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="salary_max" class="form-control" placeholder="Макс. зарплата" value="{{ request.GET.salary_max }}">
+            </div>
+            <div class="col-md-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <button type="reset" id="reset-filters" class="btn btn-secondary">Сбросить фильтры</button>
+            </div>
+        </div>
+    </form>
 
     <!-- Таблица сотрудников -->
     <div id="employee-table">
@@ -39,9 +73,14 @@
         let offset = {{ employees|length }};
         const limit = 20;
 
+        $('#reset-filters').click(function(e) {
+            e.preventDefault();
+            window.location.href = '{% url "employee_list" %}';
+        });
+
         $('#load-more').click(function(e) {
             e.preventDefault();
-            loadMoreEmployees(offset);
+            loadMoreEmployees(offset, $('#filter-form').serialize());
         });
 
         $('.sortable a').click(function(e) {
@@ -51,17 +90,20 @@
             $('.sortable a').removeClass('active');
             $(this).addClass('active');
             $(this).data('ordering', newOrdering);
-            loadSortedEmployees(newOrdering);
+            loadSortedEmployees(newOrdering, $('#filter-form').serialize());
         });
 
-        function loadMoreEmployees(currentOffset) {
+        $('#filter-form').submit(function(e) {
+            e.preventDefault();
+            offset = 0;
+            loadSortedEmployees(getOrdering(), $(this).serialize());
+        });
+
+        function loadMoreEmployees(currentOffset, filterData) {
             $.ajax({
                 url: '{% url "load_more_employees" %}',
                 type: 'GET',
-                data: {
-                    offset: currentOffset,
-                    ordering: getOrdering()
-                },
+                data: filterData + '&offset=' + currentOffset + '&ordering=' + getOrdering(),
                 success: function(data) {
                     $('#employee-rows').append(data.html);
                     offset += limit;
@@ -69,13 +111,11 @@
             });
         }
 
-        function loadSortedEmployees(ordering) {
+        function loadSortedEmployees(ordering, filterData = '') {
             $.ajax({
                 url: '{% url "employee_list" %}',
                 type: 'GET',
-                data: {
-                    ordering: ordering
-                },
+                data: filterData + '&ordering=' + ordering,
                 success: function(data) {
                     const newRows = $(data).find('#employee-rows').html();
                     $('#employee-rows').html(newRows);

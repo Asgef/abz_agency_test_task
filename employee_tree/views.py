@@ -25,7 +25,7 @@ class EmployeeChildrenView(View):
         # Загрузить подчинённых для данного сотрудника
         children = Employee.objects.filter(
             manager_id=employee_id).values(
-            'id', 'name', 'position', 'manager_id'
+            'id', 'first_name', 'last_name', 'position', 'manager_id'
             )
         return JsonResponse(list(children), safe=False)
 

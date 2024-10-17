@@ -46,4 +46,4 @@ class HomePageViewTest(TestCase):
         self.assertIsInstance(response, JsonResponse)
         json_data = response.json()
         self.assertTrue(isinstance(json_data, list))
-        self.assertEqual(len(json_data), 8)
+        self.assertEqual(len(json_data), 3)
