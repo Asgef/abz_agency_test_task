@@ -3,11 +3,11 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" id="employee-list-container">
     <h2 class="text-center mb-4">{{ title }}</h2>
 
     <!-- Форма фильтрации -->
-    <form method="get" class="mb-4">
+    <form method="get" class="mb-4" id="filter-form">
         <div class="form-group">
             <label for="id_first_name">Имя:</label>
             {{ filter.form.first_name }}
@@ -36,76 +36,65 @@
     </form>
 
     <!-- Таблица сотрудников -->
-    <table class="table table-striped" id="employee-table">
-        <thead>
-            <tr>
-                <th>№</th>
-                <th class="sortable"><a href="#" data-ordering="first_name">Имя</a></th>
-                <th class="sortable"><a href="#" data-ordering="last_name">Фамилия</a></th>
-                <th class="sortable"><a href="#" data-ordering="position">Должность</a></th>
-                <th class="sortable"><a href="#" data-ordering="hire_date">Дата приёма</a></th>
-                <th class="sortable"><a href="#" data-ordering="salary">Зарплата</a></th>
-                <th class="sortable"><a href="#" data-ordering="manager__last_name">Менеджер</a></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ employee.first_name }}</td>
-                <td>{{ employee.last_name }}</td>
-                <td>{{ employee.position }}</td>
-                <td>{{ employee.hire_date }}</td>
-                <td>{{ employee.salary }}</td>
-                <td>{% if employee.manager %}{{ employee.manager.first_name }} {{ employee.manager.last_name }}{% else %}—{% endif %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="employee-table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th class="sortable"><a href="#" data-ordering="first_name">Имя</a></th>
+                    <th class="sortable"><a href="#" data-ordering="last_name">Фамилия</a></th>
+                    <th class="sortable"><a href="#" data-ordering="position">Должность</a></th>
+                    <th class="sortable"><a href="#" data-ordering="hire_date">Дата приёма</a></th>
+                    <th class="sortable"><a href="#" data-ordering="salary">Зарплата</a></th>
+                    <th class="sortable"><a href="#" data-ordering="manager__last_name">Менеджер</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.id }}</td>
+                    <td>{{ employee.first_name }}</td>
+                    <td>{{ employee.last_name }}</td>
+                    <td>{{ employee.position }}</td>
+                    <td>{{ employee.hire_date }}</td>
+                    <td>{{ employee.salary }}</td>
+                    <td>{% if employee.manager %}{{ employee.manager.first_name }} {{ employee.manager.last_name }}{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <!-- Пагинация -->
-    <nav aria-label="Постраничная навигация">
-        <ul class="pagination justify-content-center mt-4">
-            {% if employees.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ employees.previous_page_number }}&{{ request.GET.urlencode|default:'' }}">Назад</a>
-                </li>
-            {% endif %}
-
-            <li class="page-item disabled"><span class="page-link">Страница {{ employees.number }} из {{ employees.paginator.num_pages }}</span></li>
-
-            {% if employees.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ employees.next_page_number }}&{{ request.GET.urlencode|default:'' }}">Вперед</a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+    {% include 'layouts/pagination.html' %}
 </div>
 
-<!-- AJAX сортировка -->
+<!-- AJAX пагинация и фильтрация -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.sortable a').click(function(e) {
+        // AJAX пагинация
+        $(document).on('click', '#pagination a.page-link', function(e) {
             e.preventDefault();
-            let currentOrdering = $(this).data('ordering');
-            let newOrdering = currentOrdering.startsWith('-') ? currentOrdering.substring(1) : '-' + currentOrdering;
-            $(this).data('ordering', newOrdering);
+            let page_url = $(this).attr('href');
+            loadTableData(page_url);
+        });
+
+        // AJAX фильтрация
+        $('#filter-form').submit(function(e) {
+            e.preventDefault();
+            let form_data = $(this).serialize();
+            loadTableData(`?${form_data}`);
+        });
+
+        function loadTableData(url) {
             $.ajax({
-                url: window.location.pathname,
-                data: {
-                    ordering: newOrdering,
-                    filter: $('form').serialize(),
-                },
+                url: url,
+                type: 'GET',
                 success: function(data) {
-                    $('#employee-table tbody').html($(data.html).find('#employee-table tbody').html());
-                },
-                error: function() {
-                    alert('Ошибка загрузки данных');
+                    $('#employee-list-container').html($(data).find('#employee-list-container').html());
                 }
             });
-        });
+        }
     });
 </script>
 
