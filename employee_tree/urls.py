@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import HomePageView, EmployeeChildrenView, EmployeeListView
+from .views import (
+    HomePageView, EmployeeChildrenView,
+    EmployeeListView, LoadMoreEmployeesView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +29,8 @@ urlpatterns = [
         EmployeeChildrenView.as_view(), name='employee_children'
     ),
     path('employee-list/', EmployeeListView.as_view(), name='employee_list'),
+    path(
+        'load-more-employees/', LoadMoreEmployeesView.as_view(),
+        name='load_more_employees'
+    ),
 ]

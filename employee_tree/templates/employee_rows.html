@@ -1,0 +1,11 @@
+{% for employee in employees %}
+<tr>
+    <td>{{ employee.id }}</td>
+    <td>{{ employee.first_name }}</td>
+    <td>{{ employee.last_name }}</td>
+    <td>{{ employee.position }}</td>
+    <td>{{ employee.hire_date }}</td>
+    <td>{{ employee.salary }}</td>
+    <td>{% if employee.manager %}{{ employee.manager.first_name }} {{ employee.manager.last_name }}{% else %}—{% endif %}</td>
+</tr>
+{% endfor %}

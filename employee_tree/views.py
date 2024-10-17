@@ -4,9 +4,7 @@ from .filters import EmployeeFilter
 from django_filters.views import FilterView
 from django.http import JsonResponse
 from django.views import View
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
-from django.shortcuts import render
 
 
 class HomePageView(ListView):
@@ -54,21 +52,24 @@ class EmployeeListView(FilterView, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        if object_list is None:
-            object_list = self.filter_queryset(self.get_queryset())
-
-        paginator = Paginator(object_list, self.paginate_by)
-        page = self.request.GET.get('page')
-
-        try:
-            employees = paginator.page(page)
-        except PageNotAnInteger:
-            employees = paginator.page(1)
-        except EmptyPage:
-            employees = paginator.page(paginator.num_pages)
-
-        context['employees'] = employees
+        filterset = self.filterset_class(
+            self.request.GET, queryset=self.get_queryset()
+        )
+        filtered_queryset = filterset.qs.order_by(self.get_ordering())
+        context['employees'] = filtered_queryset[:self.paginate_by]
         return context
 
 
+class LoadMoreEmployeesView(View):
+    def get(self, request, *args, **kwargs):
+        offset = int(request.GET.get('offset', 0))
+        limit = 20
+        ordering = request.GET.get('ordering', 'id')
+
+        employees = Employee.objects.all().order_by(ordering)[
+                    offset:offset + limit
+                    ]
+        html = render_to_string(
+            'employee_rows.html', {'employees': employees}
+        )
+        return JsonResponse({'html': html})

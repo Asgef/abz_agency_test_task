@@ -6,34 +6,7 @@
 <div class="container mt-5" id="employee-list-container">
     <h2 class="text-center mb-4">{{ title }}</h2>
 
-    <!-- Форма фильтрации -->
-    <form method="get" class="mb-4" id="filter-form">
-        <div class="form-group">
-            <label for="id_first_name">Имя:</label>
-            {{ filter.form.first_name }}
-        </div>
-        <div class="form-group">
-            <label for="id_last_name">Фамилия:</label>
-            {{ filter.form.last_name }}
-        </div>
-        <div class="form-group">
-            <label for="id_position">Должность:</label>
-            {{ filter.form.position }}
-        </div>
-        <div class="form-group">
-            <label for="id_hire_date_after">Hire date (from):</label>
-            {{ filter.form.hire_date.after }}
-        </div>
-        <div class="form-group">
-            <label for="id_hire_date_before">Hire date (to):</label>
-            {{ filter.form.hire_date.before }}
-        </div>
-        <div class="form-group">
-            <label for="id_salary">Salary:</label>
-            {{ filter.form.salary }}
-        </div>
-        <button type="submit" class="btn btn-primary">Фильтровать</button>
-    </form>
+    <!-- Фильтр сотрудников -->
 
     <!-- Таблица сотрудников -->
     <div id="employee-table">
@@ -49,53 +22,46 @@
                     <th class="sortable"><a href="#" data-ordering="manager__last_name">Менеджер</a></th>
                 </tr>
             </thead>
-            <tbody>
-                {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.id }}</td>
-                    <td>{{ employee.first_name }}</td>
-                    <td>{{ employee.last_name }}</td>
-                    <td>{{ employee.position }}</td>
-                    <td>{{ employee.hire_date }}</td>
-                    <td>{{ employee.salary }}</td>
-                    <td>{% if employee.manager %}{{ employee.manager.first_name }} {{ employee.manager.last_name }}{% else %}—{% endif %}</td>
-                </tr>
-                {% endfor %}
+            <tbody id="employee-rows">
+                {% include 'employee_rows.html' %}
             </tbody>
         </table>
     </div>
-
-    {% include 'layouts/pagination.html' %}
+    <div class="text-center">
+        <button id="load-more" class="btn btn-primary">Загрузить ещё</button>
+    </div>
 </div>
 
-<!-- AJAX пагинация и фильтрация -->
+<!-- AJAX для ленивой загрузки -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // AJAX пагинация
-        $(document).on('click', '#pagination a.page-link', function(e) {
+        let offset = {{ employees|length }};
+        const limit = 20;
+
+        $('#load-more').click(function(e) {
             e.preventDefault();
-            let page_url = $(this).attr('href');
-            loadTableData(page_url);
+            loadMoreEmployees(offset);
         });
 
-        // AJAX фильтрация
-        $('#filter-form').submit(function(e) {
-            e.preventDefault();
-            let form_data = $(this).serialize();
-            loadTableData(`?${form_data}`);
-        });
-
-        function loadTableData(url) {
+        function loadMoreEmployees(currentOffset) {
             $.ajax({
-                url: url,
+                url: '{% url "load_more_employees" %}',
                 type: 'GET',
+                data: {
+                    offset: currentOffset,
+                    ordering: getOrdering()
+                },
                 success: function(data) {
-                    $('#employee-list-container').html($(data).find('#employee-list-container').html());
+                    $('#employee-rows').append(data.html);
+                    offset += limit;
                 }
             });
         }
+
+        function getOrdering() {
+            return $('.sortable a.active').data('ordering') || 'id';
+        }
     });
 </script>
-
 {% endblock %}
