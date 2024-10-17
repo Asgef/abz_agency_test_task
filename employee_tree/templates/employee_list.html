@@ -13,7 +13,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>№</th>
+                    <th class="sortable"><a href="#" data-ordering="N">№</a></th>
                     <th class="sortable"><a href="#" data-ordering="first_name">Имя</a></th>
                     <th class="sortable"><a href="#" data-ordering="last_name">Фамилия</a></th>
                     <th class="sortable"><a href="#" data-ordering="position">Должность</a></th>
@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<!-- AJAX для ленивой загрузки -->
+<!-- AJAX для ленивой загрузки и сортировки -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -42,6 +42,16 @@
         $('#load-more').click(function(e) {
             e.preventDefault();
             loadMoreEmployees(offset);
+        });
+
+        $('.sortable a').click(function(e) {
+            e.preventDefault();
+            const currentOrdering = $(this).data('ordering');
+            const newOrdering = currentOrdering.startsWith('-') ? currentOrdering.slice(1) : '-' + currentOrdering;
+            $('.sortable a').removeClass('active');
+            $(this).addClass('active');
+            $(this).data('ordering', newOrdering);
+            loadSortedEmployees(newOrdering);
         });
 
         function loadMoreEmployees(currentOffset) {
@@ -55,6 +65,21 @@
                 success: function(data) {
                     $('#employee-rows').append(data.html);
                     offset += limit;
+                }
+            });
+        }
+
+        function loadSortedEmployees(ordering) {
+            $.ajax({
+                url: '{% url "employee_list" %}',
+                type: 'GET',
+                data: {
+                    ordering: ordering
+                },
+                success: function(data) {
+                    const newRows = $(data).find('#employee-rows').html();
+                    $('#employee-rows').html(newRows);
+                    offset = {{ employees|length }};
                 }
             });
         }
