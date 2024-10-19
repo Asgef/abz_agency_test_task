@@ -9,7 +9,7 @@ os.environ.setdefault(
 )
 django.setup()
 
-from employee_tree.models import Employee  # noqa E402
+from employee_tree.employee.models import Employee  # noqa E402
 
 
 seeder = Seed.seeder()

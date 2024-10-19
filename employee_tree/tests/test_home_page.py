@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse_lazy, reverse
-from employee_tree.models import Employee
+from employee_tree.employee.models import Employee
 from django.http import JsonResponse
 
 

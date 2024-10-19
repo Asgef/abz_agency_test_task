@@ -1,5 +1,5 @@
 from django_filters import FilterSet, DateFilter, NumberFilter, ChoiceFilter
-from .models import Employee
+from employee_tree.employee.models import Employee
 
 
 class EmployeeFilter(FilterSet):

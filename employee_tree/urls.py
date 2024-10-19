@@ -15,10 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from .views import (
-    HomePageView, EmployeeChildrenView, EmployeeListView,
-    LoadMoreEmployeesView, UserLoginView, UserLogoutView
+    HomePageView, EmployeeChildrenView,
+    UserLoginView, UserLogoutView
 )
 
 urlpatterns = [
@@ -28,11 +28,7 @@ urlpatterns = [
         'employee-children/<int:employee_id>/',
         EmployeeChildrenView.as_view(), name='employee_children'
     ),
-    path('employee-list/', EmployeeListView.as_view(), name='employee_list'),
-    path(
-        'load-more-employees/', LoadMoreEmployeesView.as_view(),
-        name='load_more_employees'
-    ),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
+    path('employees/', include('employee_tree.employee.urls')),
 ]

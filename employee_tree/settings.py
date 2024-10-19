@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'django_filters',
     'django_seed',
-    'employee_tree'
+    'employee_tree',
+    'employee_tree.employee',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'employee_tree.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
