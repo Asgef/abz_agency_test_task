@@ -14,7 +14,7 @@ db.sqlite3
 *.pyc
 *.iml
 *.ipynb
-/static/
+/staticfiles/
 .idea/*.iml
 coverage.xml
 
