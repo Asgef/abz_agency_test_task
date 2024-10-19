@@ -29,8 +29,7 @@ build:
 
 
 db-init:
-	python manage.py shell -c "exec(open('employees_generator.py').read())"
-
+	python employees_generator.py
 
 
 test:

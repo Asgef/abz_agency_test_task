@@ -19,6 +19,7 @@ positions = [
     "Менеджер", "Старший инженер", "Инженер"
 ]
 def main():
+    print("Starting the employee generation script...")
     if Employee.objects.exists():
         print("Employees already exists")
         return
