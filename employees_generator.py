@@ -19,7 +19,7 @@ positions = [
     "Менеджер", "Старший инженер", "Инженер"
 ]
 def main():
-    if Employee.objects.get(id=1):
+    if Employee.objects.exists():
         print("Employees already exists")
         return
 
