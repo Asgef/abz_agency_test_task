@@ -25,6 +25,7 @@ migrate:
 
 build:
 	make migrate
+	make staticfiles
 	make db-init
 
 
