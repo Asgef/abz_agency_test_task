@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import (
-    HomePageView, EmployeeChildrenView,
-    EmployeeListView, LoadMoreEmployeesView
+    HomePageView, EmployeeChildrenView, EmployeeListView,
+    LoadMoreEmployeesView, UserLoginView, UserLogoutView
 )
 
 urlpatterns = [
@@ -33,4 +33,6 @@ urlpatterns = [
         'load-more-employees/', LoadMoreEmployeesView.as_view(),
         name='load_more_employees'
     ),
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('logout/', UserLogoutView.as_view(), name='logout'),
 ]

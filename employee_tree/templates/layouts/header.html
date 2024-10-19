@@ -18,7 +18,17 @@
             </a>
           </li>
           <li class="nav-item"><a class="nav-link" href="{% url 'home_page' %}">Главная</a></li>
+          {% if user.is_authenticated %}
+
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="nav-link" style="border: none; background: none; text-decoration: none;">Выход</button>
+          </form>
+
           <li class="nav-item"><a class="nav-link" href="{% url 'employee_list' %}">Подробный список сотрудников</a></li>
+          {% else %}
+           <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>

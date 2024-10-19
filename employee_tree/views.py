@@ -5,6 +5,11 @@ from django_filters.views import FilterView
 from django.http import JsonResponse
 from django.views import View
 from django.template.loader import render_to_string
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import messages
+from django.urls import reverse_lazy
 
 
 class HomePageView(ListView):
@@ -73,3 +78,22 @@ class LoadMoreEmployeesView(View):
             'employee_rows.html', {'employees': employees}
         )
         return JsonResponse({'html': html})
+
+
+class UserLoginView(SuccessMessageMixin, LoginView):
+    template_name = 'layouts/form.html'
+    form_class = AuthenticationForm
+    next_page = reverse_lazy('home_page')
+    success_message = 'Вы вошли в систему'
+    extra_context = {
+        'title': 'Вход',
+        'button_text': 'Вход',
+    }
+
+
+class UserLogoutView(LogoutView):
+    next_page = reverse_lazy('home_page')
+
+    def dispatch(self, request, *args, **kwargs):
+        messages.info(request, 'Вы вышли из системы')
+        return super().dispatch(request, *args, **kwargs)
