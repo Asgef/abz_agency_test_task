@@ -17,7 +17,7 @@ lint:
 	poetry run flake8 employee_tree --exclude migrations
 
 shell:
-	${MANAGE} shell_plus --bpython
+	${MANAGE} shell
 
 migrate:
 	${MANAGE} makemigrations
