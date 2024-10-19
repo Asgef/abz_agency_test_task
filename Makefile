@@ -25,6 +25,13 @@ migrate:
 
 build:
 	make migrate
+	db-init
+
+db-init:
+	python manage.py shell -c "from employee_tree.models import Employee; \
+               if not Employee.objects.exists(): \
+                   exec(open('employees_generator.py').read())"
+
 
 
 test:

@@ -1,13 +1,13 @@
 from django_seed import Seed
 from django.db import transaction
 import random
-import django
-import os
+# import django
+# import os
 
-os.environ.setdefault(
-    'DJANGO_SETTINGS_MODULE', 'employee_tree.settings'
-)
-django.setup()
+# os.environ.setdefault(
+#     'DJANGO_SETTINGS_MODULE', 'employee_tree.settings'
+# )
+# django.setup()
 
 from employee_tree.models import Employee  # noqa E402
 
