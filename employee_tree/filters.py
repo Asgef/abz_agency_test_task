@@ -1,4 +1,3 @@
-from django import forms
 from django_filters import FilterSet, DateFilter, NumberFilter, ChoiceFilter
 from .models import Employee
 
