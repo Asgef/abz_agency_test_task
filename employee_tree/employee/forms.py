@@ -51,5 +51,5 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = (
             'first_name', 'last_name', 'position',
-            'hire_date','salary', 'manager',
+            'hire_date', 'salary', 'manager',
         )

@@ -1,7 +1,6 @@
 from employee_tree.mixins import AuthRequiredMixin
 from employee_tree.employee.models import Employee
 from django_filters.views import FilterView
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from employee_tree.employee.filters import EmployeeFilter
 from django.views import View
 from django.template.loader import render_to_string
@@ -11,6 +10,9 @@ from django.urls import reverse_lazy
 from employee_tree.employee.forms import EmployeeForm
 from dal import autocomplete
 from django.db.models import Q
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 
 
 class EmployeeListView(AuthRequiredMixin, FilterView, ListView):
@@ -43,7 +45,6 @@ class EmployeeListView(AuthRequiredMixin, FilterView, ListView):
         return context
 
 
-
 class EmployeeShowView(AuthRequiredMixin, DetailView):
     model = Employee
     template_name = 'employee_show.html'
@@ -74,6 +75,19 @@ class EmployeeEditView(AuthRequiredMixin, SuccessMessageMixin, UpdateView):
     extra_context = {
         'title': 'Редактирование сотрудника',
         'button_text': 'Редактировать',
+    }
+
+
+class EmployeeDeleteView(
+    AuthRequiredMixin, SuccessMessageMixin, DeleteView
+):
+    model = Employee
+    template_name = 'layouts/delete.html'
+    success_url = reverse_lazy('employee_list')
+    success_message = 'Сотрудник успешно удален'
+    extra_context = {
+        'title': 'Удаление сотрудника',
+        'button_text': 'Да, удалить',
     }
 
 
