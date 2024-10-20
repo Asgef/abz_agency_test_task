@@ -1,7 +1,7 @@
 from employee_tree.mixins import AuthRequiredMixin
 from employee_tree.employee.models import Employee
 from django_filters.views import FilterView
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from employee_tree.employee.filters import EmployeeFilter
 from django.views import View
 from django.template.loader import render_to_string
@@ -62,6 +62,18 @@ class EmployeeAddView(AuthRequiredMixin, SuccessMessageMixin, CreateView):
     extra_context = {
         'title': 'Создание сотрудника',
         'button_text': 'Создать',
+    }
+
+
+class EmployeeEditView(AuthRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Employee
+    template_name = 'layouts/form.html'
+    form_class = EmployeeForm
+    success_url = reverse_lazy('employee_list')
+    success_message = 'Сотрудник успешно отредактирован'
+    extra_context = {
+        'title': 'Редактирование сотрудника',
+        'button_text': 'Редактировать',
     }
 
 
