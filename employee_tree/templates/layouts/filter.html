@@ -1,0 +1,35 @@
+
+    <form id="filter-form" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="first_name" class="form-control" placeholder="Имя" value="{{ request.GET.first_name }}">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="last_name" class="form-control" placeholder="Фамилия" value="{{ request.GET.last_name }}">
+            </div>
+            <div class="col-md-3">
+                <select name="position" class="form-control">
+                    <option value="">Выберите должность</option>
+                    {% for key, value in employees.model.POSITION_CHOICES %}
+                        <option value="{{ key }}" {% if request.GET.position == key %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="hire_date_start" class="form-control" placeholder="Дата приёма с" value="{{ request.GET.hire_date_start }}">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="hire_date_end" class="form-control" placeholder="Дата приёма по" value="{{ request.GET.hire_date_end }}">
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="salary_min" class="form-control" placeholder="Мин. зарплата" value="{{ request.GET.salary_min }}">
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="salary_max" class="form-control" placeholder="Макс. зарплата" value="{{ request.GET.salary_max }}">
+            </div>
+            <div class="col-md-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <button type="reset" id="reset-filters" class="btn btn-secondary">Сбросить фильтры</button>
+            </div>
+        </div>
+    </form>

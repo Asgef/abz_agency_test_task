@@ -1,0 +1,66 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+    <h1 class="my-4">{{ title }}</h1>
+
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h2>{{ employee.position }}</h2>
+            </div>
+
+            <div class="card-body bg-light">
+                <p> </p>
+
+                <hr>
+
+                <div class="container">
+
+                    <div class="row p-1">
+                        <div class="col">ID сотрудника</div>
+                        <div class="col">{{ employee.id }}</div>
+                    </div>
+
+                    <div class="row p-1">
+                        <div class="col">Имя сотрудника</div>
+                        <div class="col">{{ employee.first_name }} {{ employee.last_name }}</div>
+                    </div>
+
+                    <div class="row p-1">
+                        <div class="col">Имя менеджера</div>
+                        {% if employee.manager %}
+                        <div class="col">
+                            <a href="{% url 'employee_show' employee.manager.id %}">{{ employee.manager.first_name }} {{ employee.manager.last_name }}</a>
+                        </div>
+                        {% else %}
+                        <div class="col"> -- </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="row p-1">
+                        <div class="col">Дата приема на работу</div>
+                        <div class="col">{{ employee.hire_date }}</div>
+                    </div>
+
+                    <div class="row p-1">
+                        <div class="col">Размер заработной платы</div>
+                        <div class="col">{{ employee.salary }}</div>
+                    </div>
+
+                    <div class="row p-1">
+                        <div class="col">
+                            <a href="{% url 'employee_edit' employee.id ">Редактировать</a>
+                            <br>
+                            <a href="{% url 'employee_delete' employee.id ">Удалить</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% endblock %}

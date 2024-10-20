@@ -1,7 +1,7 @@
 from employee_tree.mixins import AuthRequiredMixin
 from employee_tree.employee.models import Employee
 from django_filters.views import FilterView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from employee_tree.employee.filters import EmployeeFilter
 from django.views import View
 from django.template.loader import render_to_string
@@ -51,3 +51,12 @@ class LoadMoreEmployeesView(View):
             'employee_rows.html', {'employees': employees}
         )
         return JsonResponse({'html': html})
+
+
+class EmployeeShowView(AuthRequiredMixin, DetailView):
+    model = Employee
+    template_name = 'employee_show.html'
+    context_object_name = 'employee'
+    extra_context = {
+        'title': 'Информация о сотруднике'
+    }
