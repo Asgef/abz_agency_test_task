@@ -9,7 +9,7 @@ class Employee(models.Model):
         ('Старший инженер', 'Старший инженер'),
         ('Инженер', 'Инженер'),
     ]
-    id = models.IntegerField(primary_key=True)
+
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     position = models.CharField(max_length=255, choices=POSITION_CHOICES)
