@@ -13,22 +13,18 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="generator" content="Hugo 0.122.0">
     <link rel="icon" href="#" type="image/x-icon">
+
     <title>{% block title %}{% endblock %}</title>
-    {% bootstrap_javascript %}
+
     {% bootstrap_css %}
     <link href="{% static 'employee_tree/css/employee_tree.css' %}" rel="stylesheet">
-    <script src="{% static 'employee_tree/js/employee_tree.js' %}" defer></script>
 
-    <link href="{% static 'autocomplete_light/select2.css' %}" rel="stylesheet">
-    <script src="{% static 'autocomplete_light/select2.js' %}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'autocomplete_light/autocomplete_light.js' %}"></script>
+    {% block extra_css %}{% endblock %}
+
 
   </head>
 
   <body>
-
-
     {% include './header.html' %}
 
     <main>
@@ -36,9 +32,9 @@
       {% block content %}{% endblock %}
     </main>
 
-
     {% include './footer.html' %}
+    {% bootstrap_javascript %}
+    {% block extra_js %}{% endblock %}
 
   </body>
-
 </html>

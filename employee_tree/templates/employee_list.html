@@ -1,6 +1,19 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block title %}{{ title }}{% endblock %}
+
+{% block extra_js %}
+
+    <script>
+        var loadMoreEmployeesUrl = "{% url 'load_more_employees' %}";
+        var employeeListUrl = "{% url 'employee_list' %}";
+        var initialOffset = {{ employees|length }};
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'employee_tree/js/employee_list.js' %}" defer></script>
+{% endblock %}
 
 {% block content %}
 <div class="container mt-5" id="employee-list-container">
@@ -34,67 +47,4 @@
     </div>
 </div>
 
-<!-- AJAX для ленивой загрузки и сортировки -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        let offset = {{ employees|length }};
-        const limit = 20;
-
-        $('#reset-filters').click(function(e) {
-            e.preventDefault();
-            window.location.href = '{% url "employee_list" %}';
-        });
-
-        $('#load-more').click(function(e) {
-            e.preventDefault();
-            loadMoreEmployees(offset, $('#filter-form').serialize());
-        });
-
-        $('.sortable a').click(function(e) {
-            e.preventDefault();
-            const currentOrdering = $(this).data('ordering');
-            const newOrdering = currentOrdering.startsWith('-') ? currentOrdering.slice(1) : '-' + currentOrdering;
-            $('.sortable a').removeClass('active');
-            $(this).addClass('active');
-            $(this).data('ordering', newOrdering);
-            loadSortedEmployees(newOrdering, $('#filter-form').serialize());
-        });
-
-        $('#filter-form').submit(function(e) {
-            e.preventDefault();
-            offset = 0;
-            loadSortedEmployees(getOrdering(), $(this).serialize());
-        });
-
-        function loadMoreEmployees(currentOffset, filterData) {
-            $.ajax({
-                url: '{% url "load_more_employees" %}',
-                type: 'GET',
-                data: filterData + '&offset=' + currentOffset + '&ordering=' + getOrdering(),
-                success: function(data) {
-                    $('#employee-rows').append(data.html);
-                    offset += limit;
-                }
-            });
-        }
-
-        function loadSortedEmployees(ordering, filterData = '') {
-            $.ajax({
-                url: '{% url "employee_list" %}',
-                type: 'GET',
-                data: filterData + '&ordering=' + ordering,
-                success: function(data) {
-                    const newRows = $(data).find('#employee-rows').html();
-                    $('#employee-rows').html(newRows);
-                    offset = {{ employees|length }};
-                }
-            });
-        }
-
-        function getOrdering() {
-            return $('.sortable a.active').data('ordering') || 'id';
-        }
-    });
-</script>
 {% endblock %}
