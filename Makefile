@@ -45,4 +45,4 @@ staticfiles:
 	${MANAGE} collectstatic --no-input
 
 load_user:
-	python manage.py loaddata users.json
+	python manage.py loaddata user.json
