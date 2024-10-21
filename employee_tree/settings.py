@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'django_filters',
     'django_seed',
+    'whitenoise.runserver_nostatic',
     'employee_tree',
     'employee_tree.employee',
     'dal',
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'employee_tree.urls'
