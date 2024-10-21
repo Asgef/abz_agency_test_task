@@ -8,3 +8,5 @@ Regarding task 2.10, I have [experience](https://github.com/Asgef/gwent_website)
 The assignment is very engaging, and I have some ideas on how to further enhance it.
 
 The project is hosted on Render, and you can review it [there](https://abz-agency-test-task-l2u9.onrender.com).
+User: john
+Password: doyle
